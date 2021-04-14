@@ -32,6 +32,33 @@ const (
 	Rose
 )
 
+var colorToString = map[Color]string{
+	Red:       "Red",
+	Brick:     "Brick",
+	Orange:    "Orange",
+	Tangerine: "Tangerine",
+	Mustard:   "Mustard",
+	Yellow:    "Yellow",
+	Pear:      "Pear",
+	Sage:      "Sage",
+	Mint:      "Mint",
+	Lime:      "Lime",
+	Green:     "Green",
+	Pine:      "Pine",
+	Grey:      "Grey",
+	Aqua:      "Aqua",
+	Teal:      "Teal",
+	Denim:     "Denim",
+	Blue:      "Blue",
+	Navy:      "Navy",
+	Indigo:    "Indigo",
+	Purple:    "Purple",
+	Lavender:  "Lavender",
+	Maroon:    "Maroon",
+	Pink:      "Pink",
+	Rose:      "Rose",
+}
+
 // InternationalColorTime represents a time on the International Color Time clock. An ICT value does not contain any
 // date information, only time, and as such there are no equivalent After() or Before() functions like there are in the
 // standard time package, since they cannot be calculated with certainty.
@@ -55,6 +82,15 @@ func Now() InternationalColorTime {
 
 func Parse(layout, value string) (InternationalColorTime, error) {
 
+}
+
+// String implements the fmt.Stringer interface.
+func (c Color) String() string {
+	str, ok := colorToString[c]
+	if !ok {
+		return ""
+	}
+	return str
 }
 
 func (i InternationalColorTime) IsZero() bool {
