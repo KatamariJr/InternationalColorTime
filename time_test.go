@@ -1,6 +1,10 @@
 package internationalcolortime
 
-import "testing"
+import (
+	"reflect"
+	"testing"
+	"time"
+)
 
 func TestColor_String(t *testing.T) {
 	tests := []struct {
@@ -28,6 +32,297 @@ func TestColor_String(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := tt.c.String(); got != tt.want {
 				t.Errorf("String() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestColorTime(t *testing.T) {
+	type args struct {
+		hour Color
+		min  int
+		sec  int
+		nsec int
+	}
+	tests := []struct {
+		name string
+		args args
+		want InternationalColorTime
+	}{
+		{
+			name: "test zero",
+			args: args{
+				hour: Red,
+				min:  0,
+				sec:  0,
+				nsec: 0,
+			},
+			want: InternationalColorTime{
+				hour:  0,
+				nanos: 0,
+			},
+		},
+		{
+			name: "test time min",
+			args: args{
+				hour: Red,
+				min:  1,
+				sec:  0,
+				nsec: 0,
+			},
+			want: InternationalColorTime{
+				hour:  Red,
+				nanos: 60000000000,
+			},
+		},
+		{
+			name: "test time sec",
+			args: args{
+				hour: Red,
+				min:  0,
+				sec:  1,
+				nsec: 0,
+			},
+			want: InternationalColorTime{
+				hour:  Red,
+				nanos: 1000000000,
+			},
+		},
+		{
+			name: "test time nsec",
+			args: args{
+				hour: Red,
+				min:  0,
+				sec:  0,
+				nsec: 1,
+			},
+			want: InternationalColorTime{
+				hour:  Red,
+				nanos: 1,
+			},
+		},
+		{
+			name: "test time sec and nsec",
+			args: args{
+				hour: Red,
+				min:  0,
+				sec:  1,
+				nsec: 1,
+			},
+			want: InternationalColorTime{
+				hour:  Red,
+				nanos: 1000000001,
+			},
+		},
+		{
+			name: "test time min and nsec",
+			args: args{
+				hour: Red,
+				min:  1,
+				sec:  0,
+				nsec: 1,
+			},
+			want: InternationalColorTime{
+				hour:  Red,
+				nanos: 60000000001,
+			},
+		},
+		{
+			name: "test time min and sec",
+			args: args{
+				hour: Red,
+				min:  1,
+				sec:  1,
+				nsec: 0,
+			},
+			want: InternationalColorTime{
+				hour:  Red,
+				nanos: 61000000000,
+			},
+		},
+		{
+			name: "test time min and sec and nsec",
+			args: args{
+				hour: Red,
+				min:  1,
+				sec:  1,
+				nsec: 1,
+			},
+			want: InternationalColorTime{
+				hour:  Red,
+				nanos: 61000000001,
+			},
+		},
+		{
+			name: "test time min and sec and nsec diff color",
+			args: args{
+				hour: Rose,
+				min:  1,
+				sec:  1,
+				nsec: 1,
+			},
+			want: InternationalColorTime{
+				hour:  Rose,
+				nanos: 61000000001,
+			},
+		},
+		{
+			name: "Accept values outside the normal range for durations",
+			args: args{
+				hour: Red,
+				min:  0,
+				sec:  100,
+				nsec: 0,
+			},
+			want: InternationalColorTime{
+				hour:  Red,
+				nanos: 100000000000,
+			},
+		},
+		{
+			name: "Something that ticks over the hour mark should increment the hour value and reset nanos",
+			args: args{
+				hour: Red,
+				min:  60,
+				sec:  0,
+				nsec: 0,
+			},
+			want: InternationalColorTime{
+				hour:  Brick,
+				nanos: 0,
+			},
+		},
+		{
+			name: "Something that ticks over the hour mark should increment the hour value and reset nanos and keep them incrementing",
+			args: args{
+				hour: Red,
+				min:  60,
+				sec:  30,
+				nsec: 0,
+			},
+			want: InternationalColorTime{
+				hour:  Brick,
+				nanos: 30000000000,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := ColorTime(tt.args.hour, tt.args.min, tt.args.sec, tt.args.nsec); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("ColorTime() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestColor_String1(t *testing.T) {
+	tests := []struct {
+		name string
+		c    Color
+		want string
+	}{
+		{
+			name: "Red",
+			c:    Red,
+			want: "Red",
+		},
+		{
+			name: "Teal",
+			c:    Teal,
+			want: "Teal",
+		},
+		{
+			name: "Lime",
+			c:    Lime,
+			want: "Lime",
+		},
+		{
+			name: "Rose",
+			c:    Rose,
+			want: "Rose",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.c.String(); got != tt.want {
+				t.Errorf("String() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestInternationalColorTime_Hour(t *testing.T) {
+	type fields struct {
+		hour  Color
+		nanos int64
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   Color
+	}{
+		{
+			name: "Red",
+			fields: fields{
+				hour:  Yellow,
+				nanos: 99999999999999,
+			},
+			want: 0,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			i := InternationalColorTime{
+				hour:  tt.fields.hour,
+				nanos: tt.fields.nanos,
+			}
+			if got := i.Hour(); got != tt.want {
+				t.Errorf("Hour() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestInternationalColorTime_Minute(t *testing.T) {
+	type fields struct {
+		hour  Color
+		nanos int64
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   int
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			i := InternationalColorTime{
+				hour:  tt.fields.hour,
+				nanos: tt.fields.nanos,
+			}
+			if got := i.Minute(); got != tt.want {
+				t.Errorf("Minute() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestTimeToICT(t *testing.T) {
+	type args struct {
+		t time.Time
+	}
+	tests := []struct {
+		name string
+		args args
+		want InternationalColorTime
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := TimeToICT(tt.args.t); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("TimeToICT() = %v, want %v", got, tt.want)
 			}
 		})
 	}

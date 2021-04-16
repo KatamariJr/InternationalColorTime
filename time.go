@@ -1,8 +1,12 @@
 package internationalcolortime
 
+import "time"
+
 type Color int
 
-// Color iotas are arranged by UTC.
+const hourNanoseconds = 3600000000000
+
+// Colors are arranged by UTC.
 const (
 	Red Color = iota
 	Brick
@@ -28,6 +32,7 @@ const (
 	Maroon
 	Pink
 	Rose
+	Count
 )
 
 var colorToString = map[Color]string{
@@ -57,12 +62,45 @@ var colorToString = map[Color]string{
 	Rose:      "Rose",
 }
 
+var colorToStringShort = map[Color]string{
+	Red:       "RED",
+	Brick:     "BRK",
+	Orange:    "ORG",
+	Tangerine: "TNG",
+	Mustard:   "MRD",
+	Yellow:    "YLW",
+	Pear:      "PER",
+	Sage:      "SAG",
+	Mint:      "MNT",
+	Lime:      "LIM",
+	Green:     "GRN",
+	Pine:      "PIN",
+	Grey:      "GRY",
+	Aqua:      "AQA",
+	Teal:      "TEL",
+	Denim:     "DNM",
+	Blue:      "BLU",
+	Navy:      "NVY",
+	Indigo:    "ING",
+	Purple:    "PPL",
+	Lavender:  "LVR",
+	Maroon:    "MRN",
+	Pink:      "PNK",
+	Rose:      "ROS",
+}
+
 var stringToColor = make(map[string]Color, len(colorToString))
+var stringShortToColor = make(map[string]Color, len(colorToStringShort))
 
 func init() {
 	//create stringToColor map
 	for k, v := range colorToString {
 		stringToColor[v] = k
+	}
+
+	//create stringShortToColor map
+	for k, v := range colorToStringShort {
+		stringShortToColor[v] = k
 	}
 }
 
@@ -70,18 +108,28 @@ func init() {
 // date information, only time, and as such there are no equivalent After() or Before() functions like there are in the
 // standard time package, since they cannot be calculated with certainty.
 type InternationalColorTime struct {
-	hour    Color
-	minutes int
+	hour  Color
+	nanos int64 //nanoseconds past zero time
 }
 
-//func TimeToICT(t time.Time) InternationalColorTime {
-//
-//}
-//
-//func ColorTime(hour string, min, sec, nsec int) InternationalColorTime {
-//
-//}
-//
+func TimeToICT(t time.Time) InternationalColorTime {
+	//todo fix red
+	return ColorTime(Red, t.Minute(), t.Second(), t.Nanosecond())
+}
+
+func ColorTime(hour Color, min, sec, nsec int) InternationalColorTime {
+	ns := int64(nsec + (sec * 1000000000) + (min * 60 * 1000000000))
+	nsHourIncrs := ns / hourNanoseconds
+	if nsHourIncrs >= 1 {
+		ns -= nsHourIncrs * hourNanoseconds
+		hour = (hour + Color(nsHourIncrs)) % (Count - 1)
+	}
+	return InternationalColorTime{
+		hour:  hour,
+		nanos: ns,
+	}
+}
+
 //// Now returns the current color time.
 //func Now() InternationalColorTime {
 //
@@ -132,30 +180,24 @@ func (c Color) String() string {
 //
 //}
 //
-//func (i InternationalColorTime) Hour() Color {
-//
-//}
-//
-//func (i InternationalColorTime) Minute() int {
-//
-//}
-//
+
+func (i InternationalColorTime) Hour() Color {
+	return i.hour
+}
+
+func (i InternationalColorTime) Minute() int {
+	return int(i.nanos)
+}
+
 //func (i InternationalColorTime) Second() int {
 //
 //}
 //
-//func (i InternationalColorTime) Nanosecond() int {
-//
-//}
-//
-//func (i InternationalColorTime) Unix() int64 {
-//
-//}
-//
-//func (i InternationalColorTime) UnixNano() int64 {
-//
-//}
-//
+
+func (i InternationalColorTime) Nanosecond() int {
+	return int(i.nanos % 1000000000)
+}
+
 //func (i InternationalColorTime) Round(d time.Duration) InternationalColorTime {
 //
 //}
