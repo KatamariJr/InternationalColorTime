@@ -187,7 +187,7 @@ func (i InternationalColorTime) Hour() Color {
 }
 
 func (i InternationalColorTime) Minute() int {
-	return int(i.nanos)
+	return int(i.nanos / 60000000000)
 }
 
 //func (i InternationalColorTime) Second() int {

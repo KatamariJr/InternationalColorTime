@@ -262,12 +262,28 @@ func TestInternationalColorTime_Hour(t *testing.T) {
 		want   Color
 	}{
 		{
-			name: "Red",
+			name: "Yellow",
 			fields: fields{
 				hour:  Yellow,
 				nanos: 99999999999999,
 			},
-			want: 0,
+			want: Yellow,
+		},
+		{
+			name: "Yellow, nanos dont matter",
+			fields: fields{
+				hour:  Yellow,
+				nanos: 2222,
+			},
+			want: Yellow,
+		},
+		{
+			name: "Rose",
+			fields: fields{
+				hour:  Rose,
+				nanos: 2222,
+			},
+			want: Rose,
 		},
 	}
 	for _, tt := range tests {
@@ -293,7 +309,22 @@ func TestInternationalColorTime_Minute(t *testing.T) {
 		fields fields
 		want   int
 	}{
-		// TODO: Add test cases.
+		{
+			name: "test 1",
+			fields: fields{
+				hour:  Green,
+				nanos: 60000000000,
+			},
+			want: 1,
+		},
+		{
+			name: "test 1, hours dont matter",
+			fields: fields{
+				hour:  Indigo,
+				nanos: 60000000000,
+			},
+			want: 1,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
