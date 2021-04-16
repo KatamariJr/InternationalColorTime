@@ -1,6 +1,8 @@
 package internationalcolortime
 
-import "time"
+import (
+	"time"
+)
 
 type Color int
 
@@ -109,12 +111,11 @@ func init() {
 // standard time package, since they cannot be calculated with certainty.
 type InternationalColorTime struct {
 	hour  Color
-	nanos int64 //nanoseconds past zero time
+	nanos int64 //nanoseconds past the hour
 }
 
 func TimeToICT(t time.Time) InternationalColorTime {
-	//todo fix red
-	return ColorTime(Red, t.Minute(), t.Second(), t.Nanosecond())
+	return ColorTime(Color(t.In(time.UTC).Hour()), t.Minute(), t.Second(), t.Nanosecond())
 }
 
 func ColorTime(hour Color, min, sec, nsec int) InternationalColorTime {

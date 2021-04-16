@@ -309,19 +309,41 @@ func TestInternationalColorTime_Minute(t *testing.T) {
 }
 
 func TestTimeToICT(t *testing.T) {
-	type args struct {
-		t time.Time
-	}
+
 	tests := []struct {
 		name string
-		args args
+		t    time.Time
 		want InternationalColorTime
 	}{
-		// TODO: Add test cases.
+		{
+			name: "time 1",
+			t:    time.Date(2000, 7, 11, 12, 0, 0, 0, time.UTC),
+			want: ColorTime(Grey, 0, 0, 0),
+		},
+		{
+			name: "time 2",
+			t:    time.Date(1000, 9, 11, 16, 0, 0, 0, time.UTC),
+			want: ColorTime(Blue, 0, 0, 0),
+		},
+		{
+			name: "time 3",
+			t:    time.Date(1000, 9, 11, 20, 0, 0, 0, time.UTC),
+			want: ColorTime(Lavender, 0, 0, 0),
+		},
+		{
+			name: "time 3 w/ mins+sec",
+			t:    time.Date(1000, 9, 11, 20, 30, 30, 0, time.UTC),
+			want: ColorTime(Lavender, 30, 30, 0),
+		},
+		{
+			name: "Testing a time in a non-UTC timezone",
+			t:    time.Date(1500, 9, 11, 12, 0, 0, 0, time.FixedZone("UTC-8", -8*60*60)),
+			want: ColorTime(Lavender, 0, 0, 0),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := TimeToICT(tt.args.t); !reflect.DeepEqual(got, tt.want) {
+			if got := TimeToICT(tt.t); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("TimeToICT() = %v, want %v", got, tt.want)
 			}
 		})
