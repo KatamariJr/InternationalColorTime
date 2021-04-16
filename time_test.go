@@ -325,6 +325,22 @@ func TestInternationalColorTime_Minute(t *testing.T) {
 			},
 			want: 1,
 		},
+		{
+			name: "Should tick over if mins is greater than or equal to 60",
+			fields: fields{
+				hour:  Indigo,
+				nanos: 3600000000001,
+			},
+			want: 0,
+		},
+		{
+			name: "Big numbah",
+			fields: fields{
+				hour:  Indigo,
+				nanos: 3540000000000,
+			},
+			want: 59,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -376,6 +392,102 @@ func TestTimeToICT(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := TimeToICT(tt.t); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("TimeToICT() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestInternationalColorTime_Nanosecond(t *testing.T) {
+	type fields struct {
+		hour  Color
+		nanos int64
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   int
+	}{
+		{
+			name: "test 1",
+			fields: fields{
+				hour:  Tangerine,
+				nanos: 1000,
+			},
+			want: 1000,
+		},
+		{
+			name: "test 1, hour doesnt matter",
+			fields: fields{
+				hour:  Denim,
+				nanos: 1000,
+			},
+			want: 1000,
+		},
+		{
+			name: "should tick over if its past the amount of nanos for one second",
+			fields: fields{
+				hour:  Tangerine,
+				nanos: 1000000001,
+			},
+			want: 1,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			i := InternationalColorTime{
+				hour:  tt.fields.hour,
+				nanos: tt.fields.nanos,
+			}
+			if got := i.Nanosecond(); got != tt.want {
+				t.Errorf("Nanosecond() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestInternationalColorTime_Second(t *testing.T) {
+	type fields struct {
+		hour  Color
+		nanos int64
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   int
+	}{
+		{
+			name: "test 1",
+			fields: fields{
+				hour:  Tangerine,
+				nanos: 1000000000,
+			},
+			want: 1,
+		},
+		{
+			name: "test 1, hour doesnt matter",
+			fields: fields{
+				hour:  Denim,
+				nanos: 1000000000,
+			},
+			want: 1,
+		},
+		{
+			name: "should tick over if its past the amount of nanos for one minute",
+			fields: fields{
+				hour:  Tangerine,
+				nanos: 61000000000,
+			},
+			want: 1,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			i := InternationalColorTime{
+				hour:  tt.fields.hour,
+				nanos: tt.fields.nanos,
+			}
+			if got := i.Second(); got != tt.want {
+				t.Errorf("Second() = %v, want %v", got, tt.want)
 			}
 		})
 	}
