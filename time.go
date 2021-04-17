@@ -7,6 +7,7 @@ import (
 type Color int
 
 const hourNanoseconds = 3600000000000
+const secondNanoseconds = 1000000000
 
 // Colors are arranged by UTC.
 const (
@@ -119,16 +120,7 @@ func TimeToICT(t time.Time) InternationalColorTime {
 }
 
 func ColorTime(hour Color, min, sec, nsec int) InternationalColorTime {
-	ns := int64(nsec + (sec * 1000000000) + (min * 60 * 1000000000))
-	nsHourIncrs := ns / hourNanoseconds
-	if nsHourIncrs >= 1 {
-		ns -= nsHourIncrs * hourNanoseconds
-		hour = (hour + Color(nsHourIncrs)) % (Count - 1)
-	}
-	return InternationalColorTime{
-		hour:  hour,
-		nanos: ns,
-	}
+	return InternationalColorTime{}.add(int(hour), min, sec, nsec)
 }
 
 //// Now returns the current color time.
@@ -153,18 +145,57 @@ func (c Color) String() string {
 //
 //}
 //
-//func (i InternationalColorTime) In(location time.Location) time.Time {
-//
-//}
-//
+
+// In returns a time.Time with the equivalent timezone time as denoted by location. Since ICT has no date component,
+// the local date value is used. For a more specific translocation, use InDate()
+func (i InternationalColorTime) In(location *time.Location) time.Time {
+	t := time.Now()
+	return i.InDate(location, t.Year(), t.Month(), t.Day())
+}
+
+// InDate returns a time.Time with the equivalent timezone time as denoted by location, and the accompanying date as
+// specified by the year/month/day params.
+// todo maybe the date info should be the date as it refers to the UTC date, then translate that backwards/forwards as needed as well
+func (i InternationalColorTime) InDate(location *time.Location, year int, month time.Month, day int) time.Time {
+
+	_, offset := time.Date(0, 0, 0, 0, 0, 0, 0, location).Zone()
+
+	//calculate how far from utc to move the time
+	//we know that ICT is a UTC time, so we just tick the nanos in a direction
+
+	_ = offset * secondNanoseconds
+
+	t := time.Date(year, month, day, 0, 0, 0, 0, location)
+	//todo finish
+
+	return t
+
+}
+
+// add an amount of duration onto a color time
+func (i InternationalColorTime) add(hour, min, sec, nsec int) InternationalColorTime {
+	ns := int64(nsec+(sec*1000000000)+(min*60*1000000000)) + i.nanos
+	nsHourIncrs := int(ns / hourNanoseconds)
+	if nsHourIncrs >= 1 {
+		ns -= int64(nsHourIncrs * hourNanoseconds)
+		hour = (hour + nsHourIncrs) % (int(Count) - 1)
+	}
+	return InternationalColorTime{
+		hour:  Color(hour),
+		nanos: ns,
+	}
+}
+
 //func (i InternationalColorTime) Equal(i2 *InternationalColorTime) bool {
 //
 //}
 //
+
 //func (i InternationalColorTime) Add(duration time.Duration) InternationalColorTime {
-//
+//	duration.Nanoseconds()
+//	//todo finish
 //}
-//
+
 //// Truncate returns the result of rounding t down to a multiple of d (since the zero time). If d <= 0, Truncate returns
 //// t stripped of any monotonic clock reading but otherwise unchanged.
 ////

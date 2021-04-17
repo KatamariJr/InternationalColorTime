@@ -492,3 +492,48 @@ func TestInternationalColorTime_Second(t *testing.T) {
 		})
 	}
 }
+
+func TestInternationalColorTime_InDate(t *testing.T) {
+	type fields struct {
+		hour  Color
+		nanos int64
+	}
+	type args struct {
+		location *time.Location
+		year     int
+		month    time.Month
+		day      int
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   time.Time
+	}{
+		{
+			name: "UTC timezone should always be the same",
+			fields: fields{
+				hour:  Grey,
+				nanos: 1000000000,
+			},
+			args: args{
+				location: time.FixedZone("UTC", 0),
+				year:     2000,
+				month:    4,
+				day:      7,
+			},
+			want: time.Date(2000, 4, 7, 12, 1, 0, 0, time.UTC),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			i := InternationalColorTime{
+				hour:  tt.fields.hour,
+				nanos: tt.fields.nanos,
+			}
+			if got := i.In(tt.args.location); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("In() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
