@@ -691,63 +691,91 @@ func TestInternationalColorTime_add(t *testing.T) {
 			},
 		},
 
-		//seconds //todo
-		//{
-		//	name: "add 1 nanosecond, no tickover",
-		//	fields: fields{
-		//		hour:  Red,
-		//		nanos: 0,
-		//	},
-		//	args: args{
-		//		0, 0, 0, 1,
-		//	},
-		//	want: InternationalColorTime{
-		//		hour:  Red,
-		//		nanos: 1,
-		//	},
-		//},
-		//{
-		//	name: "subtract 1 nanosecond, no tickover",
-		//	fields: fields{
-		//		hour:  Red,
-		//		nanos: 500,
-		//	},
-		//	args: args{
-		//		0, 0, 0, -1,
-		//	},
-		//	want: InternationalColorTime{
-		//		hour:  Red,
-		//		nanos: 499,
-		//	},
-		//},
-		//{
-		//	name: "add 1 nanosecond, with tickover",
-		//	fields: fields{
-		//		hour:  Red,
-		//		nanos: 3599999999999,
-		//	},
-		//	args: args{
-		//		0, 0, 0, 1,
-		//	},
-		//	want: InternationalColorTime{
-		//		hour:  Brick,
-		//		nanos: 0,
-		//	},
-		//},
-		//{
-		//	name: "subtract 1 nanosecond, with tickover",
-		//	fields: fields{
-		//		hour:  Brick,
-		//		nanos: 0,
-		//	},
-		//	args: args{
-		//		0, 0, 0, -1,
-		//	},
-		//	want: InternationalColorTime{
-		//		hour:  Red,
-		//		nanos: 3599999999999,
-		//	},
-		//},
+		//seconds
+		{
+			name: "add 1 second, no tickover",
+			fields: fields{
+				hour:  Red,
+				nanos: 0,
+			},
+			args: args{
+				0, 0, 1, 0,
+			},
+			want: InternationalColorTime{
+				hour:  Red,
+				nanos: 1000000000,
+			},
+		},
+		{
+			name: "subtract 1 second, no tickover",
+			fields: fields{
+				hour:  Red,
+				nanos: 1000000500,
+			},
+			args: args{
+				0, 0, -1, 0,
+			},
+			want: InternationalColorTime{
+				hour:  Red,
+				nanos: 500,
+			},
+		},
+		{
+			name: "add 1 second, with tickover",
+			fields: fields{
+				hour:  Red,
+				nanos: 3599000000000,
+			},
+			args: args{
+				0, 0, 1, 0,
+			},
+			want: InternationalColorTime{
+				hour:  Brick,
+				nanos: 0,
+			},
+		},
+		{
+			name: "subtract 1 second, with tickover",
+			fields: fields{
+				hour:  Brick,
+				nanos: 0,
+			},
+			args: args{
+				0, 0, -1, 0,
+			},
+			want: InternationalColorTime{
+				hour:  Red,
+				nanos: 3599000000000,
+			},
+		},
+		{
+			name: "add 1 second, with tickover and wraparound",
+			fields: fields{
+				hour:  Rose,
+				nanos: 3599000000000,
+			},
+			args: args{
+				0, 0, 1, 0,
+			},
+			want: InternationalColorTime{
+				hour:  Red,
+				nanos: 0,
+			},
+		},
+		{
+			name: "subtract 1 second, with tickover and wraparound",
+			fields: fields{
+				hour:  Red,
+				nanos: 0,
+			},
+			args: args{
+				0, 0, -1, 0,
+			},
+			want: InternationalColorTime{
+				hour:  Rose,
+				nanos: 3599000000000,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

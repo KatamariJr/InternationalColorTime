@@ -187,8 +187,7 @@ func (i InternationalColorTime) InDate(location *time.Location, year int, month 
 
 // add an amount of duration onto a color time
 func (i InternationalColorTime) add(hour, min, sec, nsec int) InternationalColorTime {
-	//ns := int64(nsec+(sec*1000000000)+(min*60*1000000000)) + i.nanos
-	ns := int64(nsec) + i.nanos
+	ns := int64(nsec+(sec*1000000000)+(min*60*1000000000)) + i.nanos
 	nsHourIncrs := int(ns / hourNanoseconds)
 	var newHour = int(i.hour)
 	if nsHourIncrs != 0 {
