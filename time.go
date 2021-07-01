@@ -1,6 +1,7 @@
 package internationalcolortime
 
 import (
+	"fmt"
 	"time"
 )
 
@@ -172,10 +173,13 @@ func (i InternationalColorTime) InDate(location *time.Location, year int, month 
 	//calculate how far from utc to move the time
 	//we know that ICT is a UTC time, so we just tick the nanos in a direction
 
-	_ = offset * secondNanoseconds
+	numNanoSeconds := offset * secondNanoseconds
 
-	t := time.Date(year, month, day, 0, 0, 0, 0, location)
-	//todo finish
+	newi := i.add(0, 0, 0, numNanoSeconds)
+
+	fmt.Println(i.Hour())
+
+	t := time.Date(year, month, day, int(newi.Hour()), newi.Minute(), newi.Second(), newi.Nanosecond(), location)
 
 	return t
 
@@ -183,14 +187,22 @@ func (i InternationalColorTime) InDate(location *time.Location, year int, month 
 
 // add an amount of duration onto a color time
 func (i InternationalColorTime) add(hour, min, sec, nsec int) InternationalColorTime {
-	ns := int64(nsec+(sec*1000000000)+(min*60*1000000000)) + i.nanos
+	//ns := int64(nsec+(sec*1000000000)+(min*60*1000000000)) + i.nanos
+	ns := int64(nsec) + i.nanos
 	nsHourIncrs := int(ns / hourNanoseconds)
-	if nsHourIncrs >= 1 {
+	var newHour = int(i.hour)
+	if nsHourIncrs != 0 {
 		ns -= int64(nsHourIncrs * hourNanoseconds)
-		hour = (hour + nsHourIncrs) % (int(Count) - 1)
+		newHour = (newHour + nsHourIncrs) % (int(Count))
+	}
+	//check for negative ns
+	if ns < 0 {
+		ns += hourNanoseconds
+		//loop hour back around
+		newHour = ((newHour - 1) + (int(Count))) % (int(Count))
 	}
 	return InternationalColorTime{
-		hour:  Color(hour),
+		hour:  Color(newHour),
 		nanos: ns,
 	}
 }

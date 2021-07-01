@@ -6,6 +6,14 @@ import (
 	"time"
 )
 
+//timezones
+var (
+	BST = time.FixedZone("BST", 1*60*60)  //(+01:00)
+	MST = time.FixedZone("MST", -7*60*60) //(-07:00)
+	EST = time.FixedZone("EST", -5*60*60) //(-05:00)
+	KST = time.FixedZone("KST", 9*60*60)  //(+09:00)
+)
+
 func TestColor_String(t *testing.T) {
 	tests := []struct {
 		name string
@@ -522,7 +530,35 @@ func TestInternationalColorTime_InDate(t *testing.T) {
 				month:    4,
 				day:      7,
 			},
-			want: time.Date(2000, 4, 7, 12, 1, 0, 0, time.UTC),
+			want: time.Date(2000, 4, 7, 12, 0, 1, 0, time.UTC),
+		},
+		{
+			name: "BST test",
+			fields: fields{
+				hour:  Grey,
+				nanos: 1000000000,
+			},
+			args: args{
+				location: BST,
+				year:     2000,
+				month:    4,
+				day:      7,
+			},
+			want: time.Date(2000, 4, 7, 13, 0, 1, 0, BST),
+		},
+		{
+			name: "MST test",
+			fields: fields{
+				hour:  Grey,
+				nanos: 1000000000,
+			},
+			args: args{
+				location: MST,
+				year:     2000,
+				month:    4,
+				day:      7,
+			},
+			want: time.Date(2000, 4, 7, 5, 0, 1, 0, MST),
 		},
 	}
 	for _, tt := range tests {
@@ -531,8 +567,196 @@ func TestInternationalColorTime_InDate(t *testing.T) {
 				hour:  tt.fields.hour,
 				nanos: tt.fields.nanos,
 			}
-			if got := i.In(tt.args.location); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("In() = %v, want %v", got, tt.want)
+			if got := i.InDate(tt.args.location, tt.args.year, tt.args.month, tt.args.day); !got.Equal(tt.want) {
+				t.Errorf("InDate() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestInternationalColorTime_add(t *testing.T) {
+	type fields struct {
+		hour  Color
+		nanos int64
+	}
+	type args struct {
+		hour int
+		min  int
+		sec  int
+		nsec int
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   InternationalColorTime
+	}{
+		//nanoseconds
+		{
+			name: "add 1 nanosecond, no tickover",
+			fields: fields{
+				hour:  Red,
+				nanos: 0,
+			},
+			args: args{
+				0, 0, 0, 1,
+			},
+			want: InternationalColorTime{
+				hour:  Red,
+				nanos: 1,
+			},
+		},
+		{
+			name: "subtract 1 nanosecond, no tickover",
+			fields: fields{
+				hour:  Red,
+				nanos: 500,
+			},
+			args: args{
+				0, 0, 0, -1,
+			},
+			want: InternationalColorTime{
+				hour:  Red,
+				nanos: 499,
+			},
+		},
+		{
+			name: "add 1 nanosecond, with tickover",
+			fields: fields{
+				hour:  Red,
+				nanos: 3599999999999,
+			},
+			args: args{
+				0, 0, 0, 1,
+			},
+			want: InternationalColorTime{
+				hour:  Brick,
+				nanos: 0,
+			},
+		},
+		{
+			name: "subtract 1 nanosecond, with tickover",
+			fields: fields{
+				hour:  Brick,
+				nanos: 0,
+			},
+			args: args{
+				0, 0, 0, -1,
+			},
+			want: InternationalColorTime{
+				hour:  Red,
+				nanos: 3599999999999,
+			},
+		},
+		{
+			name: "subtract 1 nanosecond, with tickover #2",
+			fields: fields{
+				hour:  Blue,
+				nanos: 0,
+			},
+			args: args{
+				0, 0, 0, -1,
+			},
+			want: InternationalColorTime{
+				hour:  Denim,
+				nanos: 3599999999999,
+			},
+		},
+		{
+			name: "add 1 nanosecond, with tickover and wraparound",
+			fields: fields{
+				hour:  Rose,
+				nanos: 3599999999999,
+			},
+			args: args{
+				0, 0, 0, 1,
+			},
+			want: InternationalColorTime{
+				hour:  Red,
+				nanos: 0,
+			},
+		},
+		{
+			name: "subtract 1 nanosecond, with tickover and wraparound",
+			fields: fields{
+				hour:  Red,
+				nanos: 0,
+			},
+			args: args{
+				0, 0, 0, -1,
+			},
+			want: InternationalColorTime{
+				hour:  Rose,
+				nanos: 3599999999999,
+			},
+		},
+
+		//seconds //todo
+		//{
+		//	name: "add 1 nanosecond, no tickover",
+		//	fields: fields{
+		//		hour:  Red,
+		//		nanos: 0,
+		//	},
+		//	args: args{
+		//		0, 0, 0, 1,
+		//	},
+		//	want: InternationalColorTime{
+		//		hour:  Red,
+		//		nanos: 1,
+		//	},
+		//},
+		//{
+		//	name: "subtract 1 nanosecond, no tickover",
+		//	fields: fields{
+		//		hour:  Red,
+		//		nanos: 500,
+		//	},
+		//	args: args{
+		//		0, 0, 0, -1,
+		//	},
+		//	want: InternationalColorTime{
+		//		hour:  Red,
+		//		nanos: 499,
+		//	},
+		//},
+		//{
+		//	name: "add 1 nanosecond, with tickover",
+		//	fields: fields{
+		//		hour:  Red,
+		//		nanos: 3599999999999,
+		//	},
+		//	args: args{
+		//		0, 0, 0, 1,
+		//	},
+		//	want: InternationalColorTime{
+		//		hour:  Brick,
+		//		nanos: 0,
+		//	},
+		//},
+		//{
+		//	name: "subtract 1 nanosecond, with tickover",
+		//	fields: fields{
+		//		hour:  Brick,
+		//		nanos: 0,
+		//	},
+		//	args: args{
+		//		0, 0, 0, -1,
+		//	},
+		//	want: InternationalColorTime{
+		//		hour:  Red,
+		//		nanos: 3599999999999,
+		//	},
+		//},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			i := InternationalColorTime{
+				hour:  tt.fields.hour,
+				nanos: tt.fields.nanos,
+			}
+			if got := i.add(tt.args.hour, tt.args.min, tt.args.sec, tt.args.nsec); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("add() = %v, want %v", got, tt.want)
 			}
 		})
 	}
