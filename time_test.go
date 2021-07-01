@@ -933,3 +933,73 @@ func TestInternationalColorTime_add(t *testing.T) {
 		})
 	}
 }
+
+func TestInternationalColorTime_Add(t *testing.T) {
+	type fields struct {
+		hour  Color
+		nanos int64
+	}
+	type args struct {
+		duration time.Duration
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   InternationalColorTime
+	}{
+		{
+			name: "add 5 seconds",
+			fields: fields{
+				hour:  Green,
+				nanos: 0,
+			},
+			args: args{
+				time.Second * 5,
+			},
+			want: InternationalColorTime{
+				hour:  Green,
+				nanos: 5000000000,
+			},
+		},
+		{
+			name: "add 7 hours",
+			fields: fields{
+				hour:  Green,
+				nanos: 0,
+			},
+			args: args{
+				time.Hour * 7,
+			},
+			want: InternationalColorTime{
+				hour:  Navy,
+				nanos: 0,
+			},
+		},
+		{
+			name: "add 4 hours 20 minutes",
+			fields: fields{
+				hour:  Green,
+				nanos: 0,
+			},
+			args: args{
+				(time.Hour * 4) + (time.Minute * 20),
+			},
+			want: InternationalColorTime{
+				hour:  Teal,
+				nanos: 1200000000000,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			i := InternationalColorTime{
+				hour:  tt.fields.hour,
+				nanos: tt.fields.nanos,
+			}
+			if got := i.Add(tt.args.duration); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Add() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

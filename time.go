@@ -213,10 +213,11 @@ func (i InternationalColorTime) add(hour, min, sec, nsec int) InternationalColor
 //
 
 // Add will tick i forward by duration.
-//func (i InternationalColorTime) Add(duration time.Duration) InternationalColorTime {
-//	duration.Nanoseconds()
-//	//todo finish
-//}
+func (i InternationalColorTime) Add(duration time.Duration) InternationalColorTime {
+	ns := duration.Nanoseconds()
+
+	return i.add(0, 0, 0, int(ns))
+}
 
 // Truncate returns the result of rounding t down to a multiple of d (since the zero time). If d <= 0, Truncate returns
 // t stripped of any monotonic clock reading but otherwise unchanged.
