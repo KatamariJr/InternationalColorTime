@@ -776,6 +776,92 @@ func TestInternationalColorTime_add(t *testing.T) {
 				nanos: 3599000000000,
 			},
 		},
+
+		//minutes
+		{
+			name: "add 1 minute, no tickover",
+			fields: fields{
+				hour:  Red,
+				nanos: 0,
+			},
+			args: args{
+				0, 1, 0, 0,
+			},
+			want: InternationalColorTime{
+				hour:  Red,
+				nanos: 60000000000,
+			},
+		},
+		{
+			name: "subtract 1 minute, no tickover",
+			fields: fields{
+				hour:  Red,
+				nanos: 60000000500,
+			},
+			args: args{
+				0, -1, 0, 0,
+			},
+			want: InternationalColorTime{
+				hour:  Red,
+				nanos: 500,
+			},
+		},
+		{
+			name: "add 1 minute, with tickover",
+			fields: fields{
+				hour:  Red,
+				nanos: 3540000000000,
+			},
+			args: args{
+				0, 1, 0, 0,
+			},
+			want: InternationalColorTime{
+				hour:  Brick,
+				nanos: 0,
+			},
+		},
+		{
+			name: "subtract 1 minute, with tickover",
+			fields: fields{
+				hour:  Brick,
+				nanos: 0,
+			},
+			args: args{
+				0, -1, 0, 0,
+			},
+			want: InternationalColorTime{
+				hour:  Red,
+				nanos: 3540000000000,
+			},
+		},
+		{
+			name: "add 1 minute, with tickover and wraparound",
+			fields: fields{
+				hour:  Rose,
+				nanos: 3540000000000,
+			},
+			args: args{
+				0, 1, 0, 0,
+			},
+			want: InternationalColorTime{
+				hour:  Red,
+				nanos: 0,
+			},
+		},
+		{
+			name: "subtract 1 minute, with tickover and wraparound",
+			fields: fields{
+				hour:  Red,
+				nanos: 0,
+			},
+			args: args{
+				0, -1, 0, 0,
+			},
+			want: InternationalColorTime{
+				hour:  Rose,
+				nanos: 3540000000000,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
