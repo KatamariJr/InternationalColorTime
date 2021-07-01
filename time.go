@@ -9,7 +9,7 @@ type Color int
 const hourNanoseconds = 3600000000000
 const secondNanoseconds = 1000000000
 
-// Colors are arranged by UTC.
+// Colors are arranged according to the order they run in UTC.
 const (
 	Red Color = iota
 	Brick
@@ -115,10 +115,12 @@ type InternationalColorTime struct {
 	nanos int64 //nanoseconds past the hour
 }
 
+// TimeToICT will convert a time t into an InternationalColorTime.
 func TimeToICT(t time.Time) InternationalColorTime {
 	return ColorTime(Color(t.In(time.UTC).Hour()), t.Minute(), t.Second(), t.Nanosecond())
 }
 
+// ColorTime will return the color time struct for a given hour, minute, sec, and nanosecond.
 func ColorTime(hour Color, min, sec, nsec int) InternationalColorTime {
 	return InternationalColorTime{}.add(int(hour), min, sec, nsec)
 }
@@ -128,6 +130,12 @@ func ColorTime(hour Color, min, sec, nsec int) InternationalColorTime {
 //
 //}
 //
+// Parse a InternationalColorTime from value using a given layout string. This follows the rules laid out by the time.Time
+// library. If the specific reference time is
+//  Mon Jan 2 15:04:05 MST 2006
+// then the corresponding InternationColorTime reference time is
+//  PNK:04:05.999999999
+// where PNK is the 3-letter code for your given ColorHour.
 //func Parse(layout, value string) (InternationalColorTime, error) {
 //
 //}
@@ -141,6 +149,7 @@ func (c Color) String() string {
 	return str
 }
 
+// IsZero returns true if this is a default, uninitialized time.
 //func (i InternationalColorTime) IsZero() bool {
 //
 //}
@@ -186,69 +195,85 @@ func (i InternationalColorTime) add(hour, min, sec, nsec int) InternationalColor
 	}
 }
 
+// Equal will compare two InternationalColorTimes to see if they are the same.
 //func (i InternationalColorTime) Equal(i2 *InternationalColorTime) bool {
 //
 //}
 //
 
+// Add will tick i forward by duration.
 //func (i InternationalColorTime) Add(duration time.Duration) InternationalColorTime {
 //	duration.Nanoseconds()
 //	//todo finish
 //}
 
-//// Truncate returns the result of rounding t down to a multiple of d (since the zero time). If d <= 0, Truncate returns
-//// t stripped of any monotonic clock reading but otherwise unchanged.
-////
-//// Truncate operates on the time as an absolute duration since the zero time; it does not operate on the presentation
-//// form of the time. Thus, Truncate(Hour) may return a time with a non-zero minute, depending on the time's Location.
+// Truncate returns the result of rounding t down to a multiple of d (since the zero time). If d <= 0, Truncate returns
+// t stripped of any monotonic clock reading but otherwise unchanged.
+//
+// Truncate operates on the time as an absolute duration since the zero time; it does not operate on the presentation
+// form of the time. Thus, Truncate(Hour) may return a time with a non-zero minute, depending on the time's Location.
 //func (i InternationalColorTime) Truncate(d time.Duration) InternationalColorTime {
 //
 //}
-//
-//// String returns the time formatted using the format string
-////  "PNK:04:05.999999999"
-//// which is the ICT equivalent of the default time format found in the standard "time" package, 15:04:05.999999 -0700 MST.
+
+// String returns the time formatted using the format string
+//  PNK:04:05.999999999
+// which is the InternationalColorTime equivalent of the default time format found in the standard "time"
+//  package, 15:04:05.999999 -0700 MST.
 //func (i InternationalColorTime) String() string {
 //
 //}
 //
 
+// Hour returns the hour portion of an InternationalColorTime.
 func (i InternationalColorTime) Hour() Color {
 	return i.hour
 }
 
+// Minute returns the minute portion of an InternationalColorTime.
 func (i InternationalColorTime) Minute() int {
 	return int((i.nanos / 60000000000) % 60)
 }
 
+// Second returns the second portion of an InternationalColorTime.
 func (i InternationalColorTime) Second() int {
 	return int((i.nanos / 1000000000) % 60)
 }
 
+// Nanosecond returns teh nanosecond portion of an InternationalColorTime.
 func (i InternationalColorTime) Nanosecond() int {
 	return int(i.nanos % 1000000000)
 }
 
+// Round i to the nearest interval expressed by d.
 //func (i InternationalColorTime) Round(d time.Duration) InternationalColorTime {
 //
 //}
 //
+// Format i in the given format string. The formatting directive should include placeholder values from the
+// InternationalColorTime reference string
+//  PNK:04:05.999999999
 //func (i InternationalColorTime) Format(format string) string {
 //
 //}
 //
+// Clock returns the hour, minute, and second components of an InternationalColorTime.
 //func (i InternationalColorTime) Clock() (hour Color, min, sec int) {
 //
 //}
 //
+// GobEncode implements the encoding.GobEncoder interface.
 //func (i InternationalColorTime) GobEncode() ([]byte, error) {
 //
 //}
 //
+// GobDecode implements the encoding.GobDecoder interface.
 //func (i InternationalColorTime) GobDecode(data []byte) error {
 //
 //}
 //
+// Local will return the time.Time object that corresponds to the InternationalColorTime equivalent for your local system
+// time zone. Since InternationalColorTime structs do not contain date components, the local date will be used.
 //func (i InternationalColorTime) Local() time.Time {
 //
 //}
