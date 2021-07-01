@@ -189,7 +189,7 @@ func (i InternationalColorTime) InDate(location *time.Location, year int, month 
 func (i InternationalColorTime) add(hour, min, sec, nsec int) InternationalColorTime {
 	ns := int64(nsec+(sec*1000000000)+(min*60*1000000000)) + i.nanos
 	nsHourIncrs := int(ns / hourNanoseconds)
-	var newHour = int(i.hour)
+	var newHour = (int(i.hour) + hour + int(Count)) % int(Count)
 	if nsHourIncrs != 0 {
 		ns -= int64(nsHourIncrs * hourNanoseconds)
 		newHour = (newHour + nsHourIncrs) % (int(Count))
