@@ -39,7 +39,7 @@ const (
 	Count
 )
 
-var colorToString = map[Color]string{
+var colorToString = []string{
 	Red:       "Red",
 	Brick:     "Brick",
 	Orange:    "Orange",
@@ -66,7 +66,7 @@ var colorToString = map[Color]string{
 	Rose:      "Rose",
 }
 
-var colorToStringShort = map[Color]string{
+var colorToStringShort = []string{
 	Red:       "RED",
 	Brick:     "BRK",
 	Orange:    "ORG",
@@ -99,12 +99,12 @@ var stringShortToColor = make(map[string]Color, len(colorToStringShort))
 func init() {
 	//create stringToColor map
 	for k, v := range colorToString {
-		stringToColor[v] = k
+		stringToColor[v] = Color(k)
 	}
 
 	//create stringShortToColor map
 	for k, v := range colorToStringShort {
-		stringShortToColor[v] = k
+		stringShortToColor[v] = Color(k)
 	}
 }
 
@@ -126,11 +126,11 @@ func ColorTime(hour Color, min, sec, nsec int) InternationalColorTime {
 	return InternationalColorTime{}.add(int(hour), min, sec, nsec)
 }
 
-//// Now returns the current color time.
-//func Now() InternationalColorTime {
-//
-//}
-//
+// Now returns the current color time.
+func Now() InternationalColorTime {
+	return TimeToICT(time.Now())
+}
+
 // Parse a InternationalColorTime from value using a given layout string. This follows the rules laid out by the time.Time
 // library. If the specific reference time is
 //  Mon Jan 2 15:04:05 MST 2006
@@ -143,11 +143,7 @@ func ColorTime(hour Color, min, sec, nsec int) InternationalColorTime {
 
 // String implements the fmt.Stringer interface.
 func (c Color) String() string {
-	str, ok := colorToString[c]
-	if !ok {
-		return ""
-	}
-	return str
+	return colorToString[c]
 }
 
 // IsZero returns true if this is a default, uninitialized time.
