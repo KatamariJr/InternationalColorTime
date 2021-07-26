@@ -10,6 +10,15 @@ type Color int
 const hourNanoseconds = 3600000000000
 const secondNanoseconds = 1000000000
 
+const ICTStandardShortName = "PNK:04:05.999999999"
+const ICTStandardLongName = "Pink:04:05.999999999"
+
+const (
+	_ = iota
+	stdLongColor
+	stdShortColor
+)
+
 // Colors are arranged according to the order they run in UTC.
 const (
 	Red Color = iota
@@ -134,7 +143,7 @@ func Now() InternationalColorTime {
 // Parse a InternationalColorTime from value using a given layout string. This follows the rules laid out by the time.Time
 // library. If the specific reference time is
 //  Mon Jan 2 15:04:05 MST 2006
-// then the corresponding InternationColorTime reference time is
+// then the corresponding InternationalColorTime reference time is
 //  PNK:04:05.999999999
 // where PNK is the 3-letter code for your given ColorHour.
 //func Parse(layout, value string) (InternationalColorTime, error) {
@@ -258,13 +267,50 @@ func (i InternationalColorTime) Nanosecond() int {
 //
 //}
 //
+
 // Format i in the given format string. The formatting directive should include placeholder values from the
 // InternationalColorTime reference string
 //  PNK:04:05.999999999
-//func (i InternationalColorTime) Format(format string) string {
-//
-//}
-//
+func (i InternationalColorTime) Format(layout string) string {
+	//let time handle most of the heavy lifting for us
+	layout = i.In(time.Local).Format(layout)
+	fmt.Println(layout)
+	outStr := ""
+	for layout != "" {
+		prefix, std, suffix := nextStdChunk(layout)
+		if prefix != "" {
+			outStr += prefix
+		}
+		if std == 0 {
+			break
+		}
+		layout = suffix
+
+		switch std {
+		case stdLongColor:
+			outStr += colorToString[i.hour]
+		case stdShortColor:
+			outStr += colorToStringShort[i.hour]
+		}
+	}
+	return outStr
+}
+
+func nextStdChunk(layout string) (prefix string, std int, suffix string) {
+	for i := 0; i < len(layout); i++ {
+		switch c := int(layout[i]); c {
+		case 'P': // PNK, Pink
+			if len(layout) > i+3 && layout[i:i+3] == "PNK" {
+				return layout[0:i], stdShortColor, layout[i+3:]
+			}
+			if len(layout) > i+4 && layout[i:i+4] == "Pink" {
+				return layout[0:i], stdLongColor, layout[i+4:]
+			}
+		}
+	}
+	return layout, 0, ""
+}
+
 // Clock returns the hour, minute, and second components of an InternationalColorTime.
 //func (i InternationalColorTime) Clock() (hour Color, min, sec int) {
 //
