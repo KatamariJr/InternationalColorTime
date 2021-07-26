@@ -35,6 +35,11 @@ func TestColor_String(t *testing.T) {
 			c:    99999,
 			want: "",
 		},
+		{
+			name: "A Bad Color 2",
+			c:    -99999,
+			want: "",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

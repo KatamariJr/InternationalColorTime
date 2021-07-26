@@ -152,6 +152,9 @@ func Now() InternationalColorTime {
 
 // String implements the fmt.Stringer interface.
 func (c Color) String() string {
+	if c >= Count || c < Red {
+		return ""
+	}
 	return colorToString[c]
 }
 
