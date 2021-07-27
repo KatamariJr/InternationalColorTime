@@ -1008,3 +1008,34 @@ func TestInternationalColorTime_Add(t *testing.T) {
 		})
 	}
 }
+
+func TestInternationalColorTime_String(t *testing.T) {
+	type fields struct {
+		hour  Color
+		nanos int64
+	}
+	tests := []struct {
+		name   string
+		fields InternationalColorTime
+		want   string
+	}{
+		{
+			name:   "no nanos",
+			fields: ColorTime(Yellow, 14, 50, 0),
+			want:   "YLW:14:50",
+		},
+		{
+			name:   "yes nanos",
+			fields: ColorTime(Yellow, 14, 50, 999),
+			want:   "YLW:14:50.000000999",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			i := tt.fields
+			if got := i.String(); got != tt.want {
+				t.Errorf("String() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

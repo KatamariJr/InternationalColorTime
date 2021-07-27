@@ -240,10 +240,9 @@ func (i InternationalColorTime) Add(duration time.Duration) InternationalColorTi
 //  PNK:04:05.999999999
 // which is the InternationalColorTime equivalent of the default time format found in the standard "time"
 //  package, 15:04:05.999999 -0700 MST.
-//func (i InternationalColorTime) String() string {
-//
-//}
-//
+func (i InternationalColorTime) String() string {
+	return i.Format(ICTStandardShortName)
+}
 
 // Hour returns the hour portion of an InternationalColorTime.
 func (i InternationalColorTime) Hour() Color {
