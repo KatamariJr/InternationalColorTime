@@ -227,14 +227,12 @@ func (i InternationalColorTime) Add(duration time.Duration) InternationalColorTi
 	return i.add(0, 0, 0, int(ns))
 }
 
-// Truncate returns the result of rounding t down to a multiple of d (since the zero time). If d <= 0, Truncate returns
-// t stripped of any monotonic clock reading but otherwise unchanged.
-//
-// Truncate operates on the time as an absolute duration since the zero time; it does not operate on the presentation
-// form of the time. Thus, Truncate(Hour) may return a time with a non-zero minute, depending on the time's Location.
-//func (i InternationalColorTime) Truncate(d time.Duration) InternationalColorTime {
-//
-//}
+// Truncate returns the result of rounding t down to a multiple of d (since the zero time). Any value of d that is
+// greater than one hour is reduced to one hour.
+func (i InternationalColorTime) Truncate(d time.Duration) InternationalColorTime {
+	//todo
+	panic("unimplemented")
+}
 
 // String returns the time formatted using the format string
 //  PNK:04:05.999999999

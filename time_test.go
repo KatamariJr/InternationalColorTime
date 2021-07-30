@@ -1079,3 +1079,72 @@ func TestInternationalColorTime_Clock(t *testing.T) {
 		})
 	}
 }
+
+func TestInternationalColorTime_Truncate(t *testing.T) {
+	type args struct {
+		d time.Duration
+	}
+	tests := []struct {
+		name string
+		time InternationalColorTime
+		args args
+		want InternationalColorTime
+	}{
+		{
+			name: "any value of d that is greater than one hour is reduced to one hour",
+			time: ColorTime(Green, 30, 17, 6),
+			args: args{
+				d: time.Hour + time.Second,
+			},
+			want: ColorTime(Green, 0, 0, 0),
+		},
+		{
+			name: "Truncate to hour",
+			time: ColorTime(Green, 30, 17, 6),
+			args: args{
+				d: time.Hour,
+			},
+			want: ColorTime(Green, 0, 0, 0),
+		},
+		{
+			name: "Truncate to minute",
+			time: ColorTime(Green, 30, 17, 6),
+			args: args{
+				d: time.Minute,
+			},
+			want: ColorTime(Green, 30, 0, 0),
+		},
+		{
+			name: "Truncate to 8 minutes",
+			time: ColorTime(Green, 30, 17, 6),
+			args: args{
+				d: time.Minute * 8,
+			},
+			want: ColorTime(Green, 24, 0, 0),
+		},
+		{
+			name: "Truncate to second",
+			time: ColorTime(Green, 30, 17, 6),
+			args: args{
+				d: time.Second,
+			},
+			want: ColorTime(Green, 30, 17, 0),
+		},
+		{
+			name: "Truncate to 5 seconds",
+			time: ColorTime(Green, 30, 17, 6),
+			args: args{
+				d: time.Second * 5,
+			},
+			want: ColorTime(Green, 30, 15, 0),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			i := tt.time
+			if got := i.Truncate(tt.args.d); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Truncate() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
