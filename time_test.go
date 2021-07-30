@@ -1039,3 +1039,43 @@ func TestInternationalColorTime_String(t *testing.T) {
 		})
 	}
 }
+
+func TestInternationalColorTime_Clock(t *testing.T) {
+	tests := []struct {
+		name     string
+		time     InternationalColorTime
+		wantHour Color
+		wantMin  int
+		wantSec  int
+	}{
+		{
+			name:     "Test 1",
+			time:     ColorTime(Indigo, 5, 33, 0),
+			wantHour: Indigo,
+			wantMin:  5,
+			wantSec:  33,
+		},
+		{
+			name:     "Test 2",
+			time:     ColorTime(Indigo, 45, 01, 0),
+			wantHour: Indigo,
+			wantMin:  45,
+			wantSec:  1,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			i := tt.time
+			gotHour, gotMin, gotSec := i.Clock()
+			if gotHour != tt.wantHour {
+				t.Errorf("Clock() gotHour = %v, want %v", gotHour, tt.wantHour)
+			}
+			if gotMin != tt.wantMin {
+				t.Errorf("Clock() gotMin = %v, want %v", gotMin, tt.wantMin)
+			}
+			if gotSec != tt.wantSec {
+				t.Errorf("Clock() gotSec = %v, want %v", gotSec, tt.wantSec)
+			}
+		})
+	}
+}

@@ -314,10 +314,10 @@ func nextStdChunk(layout string) (prefix string, std int, suffix string) {
 }
 
 // Clock returns the hour, minute, and second components of an InternationalColorTime.
-//func (i InternationalColorTime) Clock() (hour Color, min, sec int) {
-//
-//}
-//
+func (i InternationalColorTime) Clock() (hour Color, min, sec int) {
+	return i.hour, i.Minute(), i.Second()
+}
+
 // GobEncode implements the encoding.GobEncoder interface.
 //func (i InternationalColorTime) GobEncode() ([]byte, error) {
 //
