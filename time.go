@@ -230,8 +230,13 @@ func (i InternationalColorTime) Add(duration time.Duration) InternationalColorTi
 // Truncate returns the result of rounding t down to a multiple of d (since the zero time). Any value of d that is
 // greater than one hour is reduced to one hour.
 func (i InternationalColorTime) Truncate(d time.Duration) InternationalColorTime {
-	//todo
-	panic("unimplemented")
+	if d <= 0 {
+		return i
+	}
+	dur := time.Duration(i.nanos)
+	dur = dur - dur%d
+	i.nanos = int64(dur)
+	return i
 }
 
 // String returns the time formatted using the format string
@@ -249,17 +254,17 @@ func (i InternationalColorTime) Hour() Color {
 
 // Minute returns the minute portion of an InternationalColorTime.
 func (i InternationalColorTime) Minute() int {
-	return int((i.nanos / 60000000000) % 60)
+	return int((i.nanos / 6e10) % 60)
 }
 
 // Second returns the second portion of an InternationalColorTime.
 func (i InternationalColorTime) Second() int {
-	return int((i.nanos / 1000000000) % 60)
+	return int((i.nanos / 1e9) % 60)
 }
 
 // Nanosecond returns teh nanosecond portion of an InternationalColorTime.
 func (i InternationalColorTime) Nanosecond() int {
-	return int(i.nanos % 1000000000)
+	return int(i.nanos % 1e9)
 }
 
 // Round i to the nearest interval expressed by d.
