@@ -278,11 +278,6 @@ func (i InternationalColorTime) Round(d time.Duration) InternationalColorTime {
 	return i
 }
 
-func (i InternationalColorTime) parseDurationAndReturn(d time.Duration) InternationalColorTime {
-	i.nanos = int64(d)
-	return i
-}
-
 // Format i in the given format string. The formatting directive should include placeholder values from the
 // InternationalColorTime reference string
 //  PNK:04:05.999999999
