@@ -268,10 +268,15 @@ func (i InternationalColorTime) Nanosecond() int {
 }
 
 // Round i to the nearest interval expressed by d.
-//func (i InternationalColorTime) Round(d time.Duration) InternationalColorTime {
-//
-//}
-//
+// A d = time.Hour will round to 0
+func (i InternationalColorTime) Round(d time.Duration) InternationalColorTime {
+	if d <= 0 {
+		return i
+	}
+	dur := time.Duration(i.nanos)
+	i.nanos = int64(dur.Round(d))
+	return i
+}
 
 // Format i in the given format string. The formatting directive should include placeholder values from the
 // InternationalColorTime reference string

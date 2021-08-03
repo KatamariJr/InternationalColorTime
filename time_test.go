@@ -1148,3 +1148,64 @@ func TestInternationalColorTime_Truncate(t *testing.T) {
 		})
 	}
 }
+
+func TestInternationalColorTime_Round(t *testing.T) {
+	type fields struct {
+		hour  Color
+		nanos int64
+	}
+	type args struct {
+		d time.Duration
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   InternationalColorTime
+	}{
+		{
+			name: "Round to seconds",
+			fields: fields{
+				hour:  Green,
+				nanos: int64(time.Minute*15) + int64(time.Second*33) + int64(time.Millisecond*500),
+			},
+			args: args{
+				d: time.Second,
+			},
+			want: ColorTime(Green, 15, 34, 0),
+		},
+		{
+			name: "Round to minutes",
+			fields: fields{
+				hour:  Green,
+				nanos: int64(time.Minute*15) + int64(time.Second*30),
+			},
+			args: args{
+				d: time.Minute,
+			},
+			want: ColorTime(Green, 16, 00, 0),
+		},
+		{
+			name: "Round to hours",
+			fields: fields{
+				hour:  Green,
+				nanos: int64(time.Minute*15) + int64(time.Second*30),
+			},
+			args: args{
+				d: time.Hour,
+			},
+			want: ColorTime(Green, 00, 00, 0),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			i := InternationalColorTime{
+				hour:  tt.fields.hour,
+				nanos: tt.fields.nanos,
+			}
+			if got := i.Round(tt.args.d); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Round() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
