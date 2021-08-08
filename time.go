@@ -3,6 +3,8 @@ package internationalcolortime
 import (
 	"fmt"
 	"time"
+
+	"github.com/katamarijr/internationalcolortime/colors"
 )
 
 type Color int
@@ -102,6 +104,33 @@ var colorToStringShort = []string{
 	Rose:      "ROS",
 }
 
+var colorToColorData = []colors.ColorData{
+	Red:       colors.Red,
+	Brick:     colors.Brick,
+	Orange:    colors.Orange,
+	Tangerine: colors.Tangerine,
+	Mustard:   colors.Mustard,
+	Yellow:    colors.Yellow,
+	Pear:      colors.Pear,
+	Sage:      colors.Sage,
+	Mint:      colors.Mint,
+	Lime:      colors.Lime,
+	Green:     colors.Green,
+	Pine:      colors.Pine,
+	Grey:      colors.Grey,
+	Aqua:      colors.Aqua,
+	Teal:      colors.Teal,
+	Denim:     colors.Denim,
+	Blue:      colors.Blue,
+	Navy:      colors.Navy,
+	Indigo:    colors.Indigo,
+	Purple:    colors.Purple,
+	Lavender:  colors.Lavender,
+	Maroon:    colors.Maroon,
+	Pink:      colors.Pink,
+	Rose:      colors.Rose,
+}
+
 var stringToColor = make(map[string]Color, len(colorToString))
 var stringShortToColor = make(map[string]Color, len(colorToStringShort))
 
@@ -140,22 +169,17 @@ func Now() InternationalColorTime {
 	return TimeToICT(time.Now())
 }
 
-// Parse a InternationalColorTime from value using a given layout string. This follows the rules laid out by the time.Time
-// library. If the specific reference time is
-//  Mon Jan 2 15:04:05 MST 2006
-// then the corresponding InternationalColorTime reference time is
-//  PNK:04:05.999999999
-// where PNK is the 3-letter code for your given ColorHour.
-//func Parse(layout, value string) (InternationalColorTime, error) {
-//
-//}
-
 // String implements the fmt.Stringer interface.
 func (c Color) String() string {
 	if c >= Count || c < Red {
 		return ""
 	}
 	return colorToString[c]
+}
+
+//ColorData will return the ColorData for this color.
+func (c Color) ColorData() colors.ColorData {
+	return colorToColorData[c]
 }
 
 // IsZero returns true if this is a default, uninitialized time.
@@ -284,7 +308,6 @@ func (i InternationalColorTime) Round(d time.Duration) InternationalColorTime {
 func (i InternationalColorTime) Format(layout string) string {
 	//let time handle most of the heavy lifting for us
 	layout = i.In(time.Local).Format(layout)
-	fmt.Println(layout)
 	outStr := ""
 	for layout != "" {
 		prefix, std, suffix := nextStdChunk(layout)
