@@ -39,6 +39,13 @@ const (
 	hexWwMask int64 = 0x000000ff
 )
 
+// generator struct names
+const (
+	topLevelColorStructName = "ColorData"
+	rgbColorStructName      = "ColorRGB"
+	rgbwColorStructName     = "ColorRGBW"
+)
+
 func main() {
 
 	baseFile := pflag.String("baseFile", "", "filename of the yml to use for generating code")
@@ -66,20 +73,20 @@ func main() {
 	f.Comment("//go:generate go run cmd/colorsgenerate/main.go --baseFile colors.yml -o colors.go")
 	f.Line()
 
-	f.Type().Id("ColorData").Struct(
+	f.Type().Id(topLevelColorStructName).Struct(
 		Id("HexRGB").String(),
 		Id("HexRGBW").String(),
-		Id("ColorRGB"),
-		Id("ColorRGBW"),
+		Id(rgbColorStructName),
+		Id(rgbwColorStructName),
 	)
 
-	f.Type().Id("ColorRGB").Struct(
+	f.Type().Id(rgbColorStructName).Struct(
 		Id("R").Int32(),
 		Id("G").Int32(),
 		Id("B").Int32(),
 	)
 
-	f.Type().Id("ColorRGBW").Struct(
+	f.Type().Id(rgbwColorStructName).Struct(
 		Id("R").Int32(),
 		Id("G").Int32(),
 		Id("B").Int32(),
@@ -119,15 +126,15 @@ func main() {
 			hexWString = fmt.Sprintf("%06x00", hex)
 		}
 
-		rgbVars = append(rgbVars, Id(colorData.Name).Op("=").Id("ColorData").Values(Dict{
+		rgbVars = append(rgbVars, Id(colorData.Name).Op("=").Id(topLevelColorStructName).Values(Dict{
 			Id("HexRGB"):  Lit(fmt.Sprintf("%06x", hex)),
 			Id("HexRGBW"): Lit(hexWString),
-			Id("ColorRGB"): Id("ColorRGB").Values(Dict{
+			Id(rgbColorStructName): Id(rgbColorStructName).Values(Dict{
 				Id("R"): Lit(c.R),
 				Id("G"): Lit(c.G),
 				Id("B"): Lit(c.B),
 			}),
-			Id("ColorRGBW"): Id("ColorRGBW").Values(Dict{
+			Id(rgbwColorStructName): Id(rgbwColorStructName).Values(Dict{
 				Id("R"): Lit(cw.R),
 				Id("G"): Lit(cw.G),
 				Id("B"): Lit(cw.B),
