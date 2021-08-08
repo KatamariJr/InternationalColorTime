@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sort"
 
 	"github.com/katamarijr/internationalcolortime/colors"
 
@@ -14,10 +15,17 @@ import (
 )
 
 type ColorGenerate struct {
-	Colors map[string]struct {
-		Hex  int32 `yaml:"hex"`
-		HexW int64 `yaml:"hexW"`
-	} `yaml:"colors"`
+	Colors map[string]colorsSorting `yaml:"colors"`
+}
+
+type colorsSorting struct {
+	Hex  int32
+	HexW int64
+}
+
+type colorSortingValues struct {
+	Name string
+	colorsSorting
 }
 
 const (
@@ -50,7 +58,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	//sortedColorNames, sortedColorHex, sortedColorHexW := sortColors(*colorsParse)
+	sortedColorData := sortColors(*colorsParse)
 
 	f := NewFile("colors")
 	f.Comment("Generated code; DO NOT EDIT")
@@ -81,24 +89,26 @@ func main() {
 	rgbVars := []Code{}
 
 	//create colorRGB values
-	for k, v := range colorsParse.Colors {
+	for _, colorData := range sortedColorData {
+		hex := colorData.Hex
 		c := colors.ColorRGB{
-			R: (v.Hex & hexRMask) >> 16,
-			G: (v.Hex & hexGMask) >> 8,
-			B: v.Hex & hexBMask,
+			R: (hex & hexRMask) >> 16,
+			G: (hex & hexGMask) >> 8,
+			B: hex & hexBMask,
 		}
 
 		cw := colors.ColorRGBW{}
-		hexW := ""
+		hexW := colorData.HexW
+		hexWString := ""
 
-		if v.HexW != 0 {
+		if hexW != 0 {
 			cw = colors.ColorRGBW{
-				R: int32((v.HexW & hexRwMask) >> 24),
-				G: int32((v.HexW & hexGwMask) >> 16),
-				B: int32((v.HexW & hexBwMask) >> 8),
-				W: int32(v.HexW & hexWwMask),
+				R: int32((hexW & hexRwMask) >> 24),
+				G: int32((hexW & hexGwMask) >> 16),
+				B: int32((hexW & hexBwMask) >> 8),
+				W: int32(hexW & hexWwMask),
 			}
-			hexW = fmt.Sprintf("%08x", v.HexW)
+			hexWString = fmt.Sprintf("%08x", hexW)
 		} else {
 			cw = colors.ColorRGBW{
 				R: c.R,
@@ -106,12 +116,12 @@ func main() {
 				B: c.B,
 				W: 0,
 			}
-			hexW = fmt.Sprintf("%06x00", v.Hex)
+			hexWString = fmt.Sprintf("%06x00", hex)
 		}
 
-		rgbVars = append(rgbVars, Id(k).Op("=").Id("ColorData").Values(Dict{
-			Id("HexRGB"):  Lit(fmt.Sprintf("%06x", v.Hex)),
-			Id("HexRGBW"): Lit(hexW),
+		rgbVars = append(rgbVars, Id(colorData.Name).Op("=").Id("ColorData").Values(Dict{
+			Id("HexRGB"):  Lit(fmt.Sprintf("%06x", hex)),
+			Id("HexRGBW"): Lit(hexWString),
 			Id("ColorRGB"): Id("ColorRGB").Values(Dict{
 				Id("R"): Lit(c.R),
 				Id("G"): Lit(c.G),
@@ -136,23 +146,25 @@ func main() {
 
 }
 
-func sortColors(g ColorGenerate) (names []string, hex []int32, hexW []int64) {
+func sortColors(g ColorGenerate) (theColorData []colorSortingValues) {
 	//loop through the map and turn it into a determinate sorted slice so the outputs will be in order. sort by member name
 	// Convert map to slice of keys.
-	keys := []string{}
-	for key, _ := range g.Colors {
-		keys = append(keys, key)
+	theColorData = []colorSortingValues{}
+	for key, colors := range g.Colors {
+		c := colorSortingValues{
+			Name: key,
+			colorsSorting: colorsSorting{
+				Hex:  colors.Hex,
+				HexW: colors.HexW,
+			},
+		}
+		theColorData = append(theColorData, c)
 	}
 
-	// Convert map to slice of values.
-	hexValues := []int32{}
-	for _, value := range g.Colors {
-		hexValues = append(hexValues, value.Hex)
-	}
-	hexWValues := []int64{}
-	for _, value := range g.Colors {
-		hexWValues = append(hexWValues, value.HexW)
-	}
+	//sort the array
+	sort.Slice(theColorData, func(i, j int) bool {
+		return theColorData[i].Name < theColorData[j].Name
+	})
 
-	return nil, nil, nil
+	return theColorData
 }
