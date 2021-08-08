@@ -14,18 +14,18 @@ import (
 	. "github.com/dave/jennifer/jen"
 )
 
-type ColorGenerate struct {
-	Colors map[string]colorsSorting `yaml:"colors"`
+type ColorDefinitionFile struct {
+	Colors map[string]colorHexValues `yaml:"colors"`
 }
 
-type colorsSorting struct {
+type colorHexValues struct {
 	Hex  int32 `yaml:"hex"`
 	HexW int64 `yaml:"hexW"`
 }
 
-type colorSortingValues struct {
+type mappedColorData struct {
 	Name string
-	colorsSorting
+	colorHexValues
 }
 
 const (
@@ -51,7 +51,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	colorsParse := &ColorGenerate{}
+	colorsParse := &ColorDefinitionFile{}
 
 	err = yaml.NewDecoder(ymlFile).Decode(colorsParse)
 	if err != nil {
@@ -146,14 +146,14 @@ func main() {
 
 }
 
-func sortColors(g ColorGenerate) (theColorData []colorSortingValues) {
+func sortColors(g ColorDefinitionFile) (theColorData []mappedColorData) {
 	//loop through the map and turn it into a determinate sorted slice so the outputs will be in order. sort by member name
 	// Convert map to slice of keys.
-	theColorData = []colorSortingValues{}
+	theColorData = []mappedColorData{}
 	for key, colors := range g.Colors {
-		c := colorSortingValues{
+		c := mappedColorData{
 			Name: key,
-			colorsSorting: colorsSorting{
+			colorHexValues: colorHexValues{
 				Hex:  colors.Hex,
 				HexW: colors.HexW,
 			},
