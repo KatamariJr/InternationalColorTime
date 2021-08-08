@@ -1,0 +1,49 @@
+colors:
+  Red:
+    hex: 0xff0002
+  Brick:
+    hex: 0xbd1f1f
+  Orange:
+    hex: 0xff5000
+  Tangerine:
+    hex: 0xff8b00
+  Mustard:
+    hex: 0xffc500
+  Yellow:
+    hex: 0xffff00
+  Pear:
+    hex: 0xd0d81e
+  Sage:
+    hex: 0xa2b13d
+  Mint:
+    hex: 0x80ff7a
+  Lime:
+    hex: 0x00ff00
+  Green:
+    hex: 0x02c000
+  Pine:
+    hex: 0x00720e
+  Grey:
+    hex: 0x888888
+  Aqua:
+    hex: 0x00ffff
+  Teal:
+    hex: 0x008080
+  Denim:
+    hex: 0x0066bb
+  Blue:
+    hex: 0x0000ff
+  Navy:
+    hex: 0x000080
+  Indigo:
+    hex: 0x3823d2
+  Purple:
+    hex: 0x7007a6
+  Lavender:
+    hex: 0xac6fd5
+  Maroon:
+    hex: 0xb00355
+  Pink:
+    hex: 0xff00ff
+  Rose:
+    hex: 0xff367f
