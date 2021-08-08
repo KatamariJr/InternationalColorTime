@@ -2,7 +2,7 @@ package colors
 
 // Generated code; DO NOT EDIT
 
-// go generate: go run cmd/colorsgenerate/main.go --baseFile color.yml -o
+//go:generate go run cmd/colorsgenerate/main.go --baseFile colors.yml -o colors.go
 
 type ColorData struct {
 	HexRGB  string

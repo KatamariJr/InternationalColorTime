@@ -19,8 +19,8 @@ type ColorGenerate struct {
 }
 
 type colorsSorting struct {
-	Hex  int32
-	HexW int64
+	Hex  int32 `yaml:"hex"`
+	HexW int64 `yaml:"hexW"`
 }
 
 type colorSortingValues struct {
@@ -63,7 +63,7 @@ func main() {
 	f := NewFile("colors")
 	f.Comment("Generated code; DO NOT EDIT")
 	f.Line()
-	f.Comment("go generate: go run cmd/colorsgenerate/main.go --baseFile color.yml -o ")
+	f.Comment("//go:generate go run cmd/colorsgenerate/main.go --baseFile colors.yml -o colors.go")
 	f.Line()
 
 	f.Type().Id("ColorData").Struct(
