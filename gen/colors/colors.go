@@ -1,35 +1,19 @@
 package colors
 
+import "github.com/katamarijr/internationalcolortime/structs"
+
 // Generated code; DO NOT EDIT
 
-//go:generate go run cmd/colorsgenerate/main.go --baseFile colors.yml -o colors.go
-
-type ColorData struct {
-	HexRGB  string
-	HexRGBW string
-	ColorRGB
-	ColorRGBW
-}
-type ColorRGB struct {
-	R int32
-	G int32
-	B int32
-}
-type ColorRGBW struct {
-	R int32
-	G int32
-	B int32
-	W int32
-}
+//go:generate go run ../../cmd/colorsgenerate/main.go --baseFile ../../cmd/colorsgenerate/colors.yml -o .
 
 var (
-	Aqua = ColorData{
-		ColorRGB: ColorRGB{
+	Aqua = structs.ColorData{
+		ColorRGB: structs.ColorRGB{
 			B: int32(255),
 			G: int32(255),
 			R: int32(0),
 		},
-		ColorRGBW: ColorRGBW{
+		ColorRGBW: structs.ColorRGBW{
 			B: int32(255),
 			G: int32(255),
 			R: int32(0),
@@ -38,13 +22,13 @@ var (
 		HexRGB:  "00ffff",
 		HexRGBW: "00ffff00",
 	}
-	Blue = ColorData{
-		ColorRGB: ColorRGB{
+	Blue = structs.ColorData{
+		ColorRGB: structs.ColorRGB{
 			B: int32(255),
 			G: int32(0),
 			R: int32(0),
 		},
-		ColorRGBW: ColorRGBW{
+		ColorRGBW: structs.ColorRGBW{
 			B: int32(255),
 			G: int32(0),
 			R: int32(0),
@@ -53,13 +37,13 @@ var (
 		HexRGB:  "0000ff",
 		HexRGBW: "0000ff00",
 	}
-	Brick = ColorData{
-		ColorRGB: ColorRGB{
+	Brick = structs.ColorData{
+		ColorRGB: structs.ColorRGB{
 			B: int32(31),
 			G: int32(31),
 			R: int32(189),
 		},
-		ColorRGBW: ColorRGBW{
+		ColorRGBW: structs.ColorRGBW{
 			B: int32(31),
 			G: int32(31),
 			R: int32(189),
@@ -68,13 +52,13 @@ var (
 		HexRGB:  "bd1f1f",
 		HexRGBW: "bd1f1f00",
 	}
-	Denim = ColorData{
-		ColorRGB: ColorRGB{
+	Denim = structs.ColorData{
+		ColorRGB: structs.ColorRGB{
 			B: int32(187),
 			G: int32(102),
 			R: int32(0),
 		},
-		ColorRGBW: ColorRGBW{
+		ColorRGBW: structs.ColorRGBW{
 			B: int32(187),
 			G: int32(102),
 			R: int32(0),
@@ -83,13 +67,13 @@ var (
 		HexRGB:  "0066bb",
 		HexRGBW: "0066bb00",
 	}
-	Green = ColorData{
-		ColorRGB: ColorRGB{
+	Green = structs.ColorData{
+		ColorRGB: structs.ColorRGB{
 			B: int32(0),
 			G: int32(192),
 			R: int32(2),
 		},
-		ColorRGBW: ColorRGBW{
+		ColorRGBW: structs.ColorRGBW{
 			B: int32(0),
 			G: int32(192),
 			R: int32(2),
@@ -98,13 +82,13 @@ var (
 		HexRGB:  "02c000",
 		HexRGBW: "02c00000",
 	}
-	Grey = ColorData{
-		ColorRGB: ColorRGB{
+	Grey = structs.ColorData{
+		ColorRGB: structs.ColorRGB{
 			B: int32(136),
 			G: int32(136),
 			R: int32(136),
 		},
-		ColorRGBW: ColorRGBW{
+		ColorRGBW: structs.ColorRGBW{
 			B: int32(136),
 			G: int32(136),
 			R: int32(136),
@@ -113,13 +97,13 @@ var (
 		HexRGB:  "888888",
 		HexRGBW: "88888800",
 	}
-	Indigo = ColorData{
-		ColorRGB: ColorRGB{
+	Indigo = structs.ColorData{
+		ColorRGB: structs.ColorRGB{
 			B: int32(210),
 			G: int32(35),
 			R: int32(56),
 		},
-		ColorRGBW: ColorRGBW{
+		ColorRGBW: structs.ColorRGBW{
 			B: int32(210),
 			G: int32(35),
 			R: int32(56),
@@ -128,13 +112,13 @@ var (
 		HexRGB:  "3823d2",
 		HexRGBW: "3823d200",
 	}
-	Lavender = ColorData{
-		ColorRGB: ColorRGB{
+	Lavender = structs.ColorData{
+		ColorRGB: structs.ColorRGB{
 			B: int32(213),
 			G: int32(111),
 			R: int32(172),
 		},
-		ColorRGBW: ColorRGBW{
+		ColorRGBW: structs.ColorRGBW{
 			B: int32(213),
 			G: int32(111),
 			R: int32(172),
@@ -143,13 +127,13 @@ var (
 		HexRGB:  "ac6fd5",
 		HexRGBW: "ac6fd500",
 	}
-	Lime = ColorData{
-		ColorRGB: ColorRGB{
+	Lime = structs.ColorData{
+		ColorRGB: structs.ColorRGB{
 			B: int32(0),
 			G: int32(255),
 			R: int32(0),
 		},
-		ColorRGBW: ColorRGBW{
+		ColorRGBW: structs.ColorRGBW{
 			B: int32(0),
 			G: int32(255),
 			R: int32(0),
@@ -158,13 +142,13 @@ var (
 		HexRGB:  "00ff00",
 		HexRGBW: "00ff0000",
 	}
-	Maroon = ColorData{
-		ColorRGB: ColorRGB{
+	Maroon = structs.ColorData{
+		ColorRGB: structs.ColorRGB{
 			B: int32(85),
 			G: int32(3),
 			R: int32(176),
 		},
-		ColorRGBW: ColorRGBW{
+		ColorRGBW: structs.ColorRGBW{
 			B: int32(85),
 			G: int32(3),
 			R: int32(176),
@@ -173,13 +157,13 @@ var (
 		HexRGB:  "b00355",
 		HexRGBW: "b0035500",
 	}
-	Mint = ColorData{
-		ColorRGB: ColorRGB{
+	Mint = structs.ColorData{
+		ColorRGB: structs.ColorRGB{
 			B: int32(122),
 			G: int32(255),
 			R: int32(128),
 		},
-		ColorRGBW: ColorRGBW{
+		ColorRGBW: structs.ColorRGBW{
 			B: int32(122),
 			G: int32(255),
 			R: int32(128),
@@ -188,13 +172,13 @@ var (
 		HexRGB:  "80ff7a",
 		HexRGBW: "80ff7a00",
 	}
-	Mustard = ColorData{
-		ColorRGB: ColorRGB{
+	Mustard = structs.ColorData{
+		ColorRGB: structs.ColorRGB{
 			B: int32(0),
 			G: int32(197),
 			R: int32(255),
 		},
-		ColorRGBW: ColorRGBW{
+		ColorRGBW: structs.ColorRGBW{
 			B: int32(0),
 			G: int32(197),
 			R: int32(255),
@@ -203,13 +187,13 @@ var (
 		HexRGB:  "ffc500",
 		HexRGBW: "ffc50000",
 	}
-	Navy = ColorData{
-		ColorRGB: ColorRGB{
+	Navy = structs.ColorData{
+		ColorRGB: structs.ColorRGB{
 			B: int32(128),
 			G: int32(0),
 			R: int32(0),
 		},
-		ColorRGBW: ColorRGBW{
+		ColorRGBW: structs.ColorRGBW{
 			B: int32(128),
 			G: int32(0),
 			R: int32(0),
@@ -218,13 +202,13 @@ var (
 		HexRGB:  "000080",
 		HexRGBW: "00008000",
 	}
-	Orange = ColorData{
-		ColorRGB: ColorRGB{
+	Orange = structs.ColorData{
+		ColorRGB: structs.ColorRGB{
 			B: int32(0),
 			G: int32(80),
 			R: int32(255),
 		},
-		ColorRGBW: ColorRGBW{
+		ColorRGBW: structs.ColorRGBW{
 			B: int32(0),
 			G: int32(80),
 			R: int32(255),
@@ -233,13 +217,13 @@ var (
 		HexRGB:  "ff5000",
 		HexRGBW: "ff500000",
 	}
-	Pear = ColorData{
-		ColorRGB: ColorRGB{
+	Pear = structs.ColorData{
+		ColorRGB: structs.ColorRGB{
 			B: int32(30),
 			G: int32(216),
 			R: int32(208),
 		},
-		ColorRGBW: ColorRGBW{
+		ColorRGBW: structs.ColorRGBW{
 			B: int32(30),
 			G: int32(216),
 			R: int32(208),
@@ -248,13 +232,13 @@ var (
 		HexRGB:  "d0d81e",
 		HexRGBW: "d0d81e00",
 	}
-	Pine = ColorData{
-		ColorRGB: ColorRGB{
+	Pine = structs.ColorData{
+		ColorRGB: structs.ColorRGB{
 			B: int32(14),
 			G: int32(114),
 			R: int32(0),
 		},
-		ColorRGBW: ColorRGBW{
+		ColorRGBW: structs.ColorRGBW{
 			B: int32(14),
 			G: int32(114),
 			R: int32(0),
@@ -263,13 +247,13 @@ var (
 		HexRGB:  "00720e",
 		HexRGBW: "00720e00",
 	}
-	Pink = ColorData{
-		ColorRGB: ColorRGB{
+	Pink = structs.ColorData{
+		ColorRGB: structs.ColorRGB{
 			B: int32(255),
 			G: int32(0),
 			R: int32(255),
 		},
-		ColorRGBW: ColorRGBW{
+		ColorRGBW: structs.ColorRGBW{
 			B: int32(255),
 			G: int32(0),
 			R: int32(255),
@@ -278,13 +262,13 @@ var (
 		HexRGB:  "ff00ff",
 		HexRGBW: "ff00ff00",
 	}
-	Purple = ColorData{
-		ColorRGB: ColorRGB{
+	Purple = structs.ColorData{
+		ColorRGB: structs.ColorRGB{
 			B: int32(166),
 			G: int32(7),
 			R: int32(112),
 		},
-		ColorRGBW: ColorRGBW{
+		ColorRGBW: structs.ColorRGBW{
 			B: int32(166),
 			G: int32(7),
 			R: int32(112),
@@ -293,13 +277,13 @@ var (
 		HexRGB:  "7007a6",
 		HexRGBW: "7007a600",
 	}
-	Red = ColorData{
-		ColorRGB: ColorRGB{
+	Red = structs.ColorData{
+		ColorRGB: structs.ColorRGB{
 			B: int32(0),
 			G: int32(0),
 			R: int32(255),
 		},
-		ColorRGBW: ColorRGBW{
+		ColorRGBW: structs.ColorRGBW{
 			B: int32(0),
 			G: int32(0),
 			R: int32(255),
@@ -308,13 +292,13 @@ var (
 		HexRGB:  "ff0000",
 		HexRGBW: "ff000000",
 	}
-	Rose = ColorData{
-		ColorRGB: ColorRGB{
+	Rose = structs.ColorData{
+		ColorRGB: structs.ColorRGB{
 			B: int32(127),
 			G: int32(54),
 			R: int32(255),
 		},
-		ColorRGBW: ColorRGBW{
+		ColorRGBW: structs.ColorRGBW{
 			B: int32(127),
 			G: int32(54),
 			R: int32(255),
@@ -323,13 +307,13 @@ var (
 		HexRGB:  "ff367f",
 		HexRGBW: "ff367f00",
 	}
-	Sage = ColorData{
-		ColorRGB: ColorRGB{
+	Sage = structs.ColorData{
+		ColorRGB: structs.ColorRGB{
 			B: int32(61),
 			G: int32(177),
 			R: int32(162),
 		},
-		ColorRGBW: ColorRGBW{
+		ColorRGBW: structs.ColorRGBW{
 			B: int32(61),
 			G: int32(177),
 			R: int32(162),
@@ -338,13 +322,13 @@ var (
 		HexRGB:  "a2b13d",
 		HexRGBW: "a2b13d00",
 	}
-	Tangerine = ColorData{
-		ColorRGB: ColorRGB{
+	Tangerine = structs.ColorData{
+		ColorRGB: structs.ColorRGB{
 			B: int32(0),
 			G: int32(139),
 			R: int32(255),
 		},
-		ColorRGBW: ColorRGBW{
+		ColorRGBW: structs.ColorRGBW{
 			B: int32(0),
 			G: int32(139),
 			R: int32(255),
@@ -353,13 +337,13 @@ var (
 		HexRGB:  "ff8b00",
 		HexRGBW: "ff8b0000",
 	}
-	Teal = ColorData{
-		ColorRGB: ColorRGB{
+	Teal = structs.ColorData{
+		ColorRGB: structs.ColorRGB{
 			B: int32(128),
 			G: int32(128),
 			R: int32(0),
 		},
-		ColorRGBW: ColorRGBW{
+		ColorRGBW: structs.ColorRGBW{
 			B: int32(128),
 			G: int32(128),
 			R: int32(0),
@@ -368,13 +352,13 @@ var (
 		HexRGB:  "008080",
 		HexRGBW: "00808000",
 	}
-	Yellow = ColorData{
-		ColorRGB: ColorRGB{
+	Yellow = structs.ColorData{
+		ColorRGB: structs.ColorRGB{
 			B: int32(0),
 			G: int32(255),
 			R: int32(255),
 		},
-		ColorRGBW: ColorRGBW{
+		ColorRGBW: structs.ColorRGBW{
 			B: int32(0),
 			G: int32(255),
 			R: int32(255),
